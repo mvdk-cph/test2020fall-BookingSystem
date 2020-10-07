@@ -4,13 +4,10 @@ import datalayer.customer.CustomerStorage;
 import datalayer.customer.CustomerStorageImpl;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
@@ -30,15 +27,16 @@ class SvcCreateCustomerTest {
     private CustomerService svc;
     private CustomerStorage storage;
 
-    private final int PORT = 33071;
-    private final String PASSWORD = "testuser1234";
+    private static final int PORT = 3306;
+    private static final String PASSWORD = "testuser1234";
+
     @Container
-    public MySQLContainer mysql = (MySQLContainer) new MySQLContainer(DockerImageName.parse("mysql"))
-            .withUsername("root")
+    public static MySQLContainer mysql = (MySQLContainer) new MySQLContainer(DockerImageName.parse("mysql"))
             .withPassword(PASSWORD)
-            .withExposedPorts(PORT)
-            .waitingFor(new WaitAllStrategy());
-//    public GenericContainer mysql = new GenericContainer(DockerImageName.parse("mysql"))
+            .withExposedPorts(PORT);
+
+    // A generic container could be used as well:
+//    public static GenericContainer mysql = new GenericContainer(DockerImageName.parse("mysql"))
 //            .withExposedPorts(PORT)
 //            .withEnv("MYSQL_ROOT_PASSWORD", PASSWORD);
 
@@ -46,7 +44,8 @@ class SvcCreateCustomerTest {
     public void setup() {
         System.err.println("mysql created: " + mysql.isCreated());
         System.err.println("mysql running: " + mysql.isRunning());
-        String url = "jdbc:mysql://localhost:"+PORT+"/";
+        System.err.println("mysql host: " + mysql.getHost());
+        String url = "jdbc:mysql://"+mysql.getHost()+":"+mysql.getFirstMappedPort()+"/";
         String db = "DemoApplicationTest";
         Flyway flyway = new Flyway(
                 new FluentConfiguration()
