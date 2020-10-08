@@ -10,13 +10,13 @@ import servicelayer.customer.CustomerService;
 import servicelayer.customer.CustomerServiceException;
 import servicelayer.customer.CustomerServiceImpl;
 
+import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SvcCreateCustomerTest extends ContainerizedDbIntegrationTest {
+public class SomeOtherIntegrationTest extends ContainerizedDbIntegrationTest {
 
     private CustomerService svc;
     private CustomerStorage storage;
@@ -24,23 +24,22 @@ class SvcCreateCustomerTest extends ContainerizedDbIntegrationTest {
     @BeforeAll
     public void setup() {
         runMigration(3);
-        storage = new CustomerStorageImpl(getConnectionString(),"root", getDbPassword());
+
+        storage = new CustomerStorageImpl(getConnectionString(), "root", getDbPassword());
         svc = new CustomerServiceImpl(storage);
     }
 
     @Test
-    public void mustSaveCustomerToDatabaseWhenCallingCreateCustomer() throws CustomerServiceException, SQLException {
+    public void Stuff() throws CustomerServiceException, SQLException {
         // Arrange
-        var firstName = "John";
-        var lastName = "Johnson";
-        var bday = new Date(1239821l);
-        int id = svc.createCustomer(firstName, lastName, bday);
+        var id = svc.createCustomer("schmeep", "schmoop", Date.valueOf("1987-10-07"));
 
         // Act
-        var createdCustomer = storage.getCustomerWithId(id);
+        var c = svc.getCustomerById(id);
 
         // Assert
-        assertEquals(firstName, createdCustomer.getFirstname());
-        assertEquals(lastName, createdCustomer.getLastname());
+        assertEquals("schmeep", c.getFirstname());
+        assertEquals("schmoop", c.getLastname());
     }
+
 }
