@@ -21,6 +21,7 @@ class CreateCustomerTest {
     private CustomerStorage customerStorage;
 
     /* changed code */
+    /* feature: new booking */
 
     @BeforeAll
     public void Setup() throws SQLException {
