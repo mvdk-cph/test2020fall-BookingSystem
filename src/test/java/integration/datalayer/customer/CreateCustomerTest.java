@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CreateCustomerTest {
     private CustomerStorage customerStorage;
 
+    /* changed code */
+
     @BeforeAll
     public void Setup() throws SQLException {
         var url = "jdbc:mysql://localhost:3307/";
