@@ -38,6 +38,7 @@ public class CreateCustomerTest {
         var firstName = "a";
         var lastName = "b";
         var birthdate = new Date(123456789l);
+
         customerService.createCustomer(firstName, lastName, birthdate);
 
         // Assert

@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import datalayer.customer.CustomerStorage;
 import datalayer.customer.CustomerStorageImpl;
 import dto.CustomerCreation;
+import integration.ContainerizedDbIntegrationTest;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,26 +18,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-class CreateCustomerTest {
+class CreateCustomerTest extends ContainerizedDbIntegrationTest {
     private CustomerStorage customerStorage;
 
     /* changed code */
 
     @BeforeAll
     public void Setup() throws SQLException {
-        var url = "jdbc:mysql://localhost:3307/";
-        var db = "DemoApplicationTest";
+        runMigration(2);
 
-        Flyway flyway = new Flyway(new FluentConfiguration()
-                .defaultSchema(db)
-                .createSchemas(true)
-                .schemas(db)
-                .target("2")
-                .dataSource(url, "root", "testuser123"));
-
-        flyway.migrate();
-
-        customerStorage = new CustomerStorageImpl(url+db, "root", "testuser123");
+        customerStorage = new CustomerStorageImpl(getConnectionString(), "root", getDbPassword());
 
         var numCustomers = customerStorage.getCustomers().size();
         if (numCustomers < 100) {
