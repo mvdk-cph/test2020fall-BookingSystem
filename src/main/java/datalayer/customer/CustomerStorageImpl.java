@@ -45,15 +45,16 @@ public class CustomerStorageImpl implements CustomerStorage {
              var stmt = con.createStatement()) {
             var results = new ArrayList<Customer>();
 
-            ResultSet resultSet = stmt.executeQuery("select ID, firstname, lastname from Customers");
+            try (ResultSet resultSet = stmt.executeQuery("select ID, firstname, lastname from Customers")) {
 
-            while (resultSet.next()) {
-                int id = resultSet.getInt("ID");
-                String firstname = resultSet.getString("firstname");
-                String lastname = resultSet.getString("lastname");
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("ID");
+                    String firstname = resultSet.getString("firstname");
+                    String lastname = resultSet.getString("lastname");
 
-                Customer c = new Customer(id, firstname, lastname);
-                results.add(c);
+                    Customer c = new Customer(id, firstname, lastname);
+                    results.add(c);
+                }
             }
 
             return results;
